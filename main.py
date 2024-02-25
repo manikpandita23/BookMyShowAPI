@@ -14,25 +14,25 @@ def get_bookmyshow_url(movie_name, city):
         response = session.get(search_url, headers=headers)
         response.raise_for_status()
     except requests.exceptions.HTTPError as errh:
-        print ("HTTP Error:", errh)
+        print("HTTP Error:", errh)
         return None
     except requests.exceptions.ConnectionError as errc:
-        print ("Error Connecting:", errc)
+        print("Error Connecting:", errc)
         return None
     except requests.exceptions.Timeout as errt:
-        print ("Timeout Error:", errt)
+        print("Timeout Error:", errt)
         return None
     except requests.exceptions.RequestException as err:
-        print ("Oops, something went wrong:", err)
+        print("Oops, something went wrong:", err)
         return None
     
     return response.text
 
-def get_specific_page_url(html_content):
-    soup = BeautifulSoup(html_content,'html.parser')
-    specific_link = soup.find('a', href=True, text=lambda text: 'movie_name' in text.lower())
-    if  specific_link:
-        return  specific_link['href']
+def get_specific_page_url(html_content, movie_name):
+    soup = BeautifulSoup(html_content, 'html.parser')
+    specific_link = soup.find('a', href=True, text=lambda text: movie_name.lower() in text.lower())
+    if specific_link:
+        return specific_link['href']
     else:
         return None
 
@@ -45,7 +45,7 @@ if html_content:
     print("HTML Content:")
     print(html_content)
     print("\n")
-    specific_page_url = get_specific_page_url(html_content)
+    specific_page_url = get_specific_page_url(html_content, movie_name)
     if specific_page_url:
         print(f"Visit the specific page for '{movie_name}' in {city}: {specific_page_url}")
     else:
